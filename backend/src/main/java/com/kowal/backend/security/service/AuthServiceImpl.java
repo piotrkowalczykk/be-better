@@ -1,6 +1,8 @@
 package com.kowal.backend.security.service;
 
+import com.kowal.backend.security.dto.request.LoginRequest;
 import com.kowal.backend.security.dto.request.RegisterRequest;
+import com.kowal.backend.security.dto.response.LoginResponse;
 import com.kowal.backend.security.dto.response.RegisterResponse;
 import com.kowal.backend.security.exception.EmailAlreadyUsedException;
 import com.kowal.backend.security.mapper.AuthUserMapper;
@@ -10,6 +12,9 @@ import com.kowal.backend.security.repository.AuthUserRepository;
 import com.kowal.backend.security.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +28,17 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private AuthUserMapper authUserMapper;
+    private JWTGenerator jwtGenerator;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, AuthUserRepository authUserRepository,
-                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthUserMapper authUserMapper){
+                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthUserMapper authUserMapper, JWTGenerator jwtGenerator){
         this.authenticationManager = authenticationManager;
         this.authUserRepository = authUserRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authUserMapper =  authUserMapper;
+        this.jwtGenerator = jwtGenerator;
     }
 
     @Override
@@ -47,5 +54,16 @@ public class AuthServiceImpl implements AuthService {
         authUserRepository.save(user);
 
         return authUserMapper.mapAuthUserToRegisterResponse(user);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(), loginRequest.getPassword()
+        ));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtGenerator.generateToken(authentication);
+        return new LoginResponse(token);
     }
 }

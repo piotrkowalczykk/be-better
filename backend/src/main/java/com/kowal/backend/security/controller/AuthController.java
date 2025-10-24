@@ -1,8 +1,11 @@
 package com.kowal.backend.security.controller;
 
+import com.kowal.backend.security.dto.request.LoginRequest;
 import com.kowal.backend.security.dto.request.RegisterRequest;
+import com.kowal.backend.security.dto.response.LoginResponse;
 import com.kowal.backend.security.dto.response.RegisterResponse;
 import com.kowal.backend.security.service.AuthService;
+import com.kowal.backend.security.service.JWTGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,11 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
         RegisterResponse response = authService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        LoginResponse response = authService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
