@@ -1,6 +1,6 @@
 package com.kowal.backend.security.config;
 
-import com.kowal.backend.security.service.JWTGenerator;
+import com.kowal.backend.security.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,20 +17,20 @@ import java.io.IOException;
 
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-    private JWTGenerator jwtGenerator;
+    private JWTService jwtService;
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    public JWTAuthenticationFilter(JWTGenerator jwtGenerator, CustomUserDetailsService customUserDetailsService) {
-        this.jwtGenerator = jwtGenerator;
+    public JWTAuthenticationFilter(JWTService jwtService, CustomUserDetailsService customUserDetailsService) {
+        this.jwtService = jwtService;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getJWTFromRequest(request);
-        if(token != null && jwtGenerator.validateToken(token)){
-            String email = jwtGenerator.getEmailFromToken(token);
+        if(token != null && jwtService.validateToken(token)){
+            String email = jwtService.getEmailFromToken(token);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

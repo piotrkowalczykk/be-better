@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class JWTGenerator {
+public class JWTService {
 
     public static final long JWT_EXPIRATION = 86400000;
     public static final String SECRET_KEY = "6416a20b53bae4e905e38382769c88831558534ed1fe7abea8319a07e903e71e633f0bb705b666ea8d1b70ef81bbe4a9300fdf8e34fcdd9ca4a8ce0830422027";

@@ -7,17 +7,20 @@ import com.kowal.backend.security.model.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
 public class AuthUserMapper {
 
-    public AuthUser mapRegisterRequestToAuthUser(RegisterRequest registerRequest, Role role, PasswordEncoder passwordEncoder){
+    public AuthUser mapRegisterRequestToAuthUser(RegisterRequest registerRequest, Role role, PasswordEncoder passwordEncoder, String hashedEmailCode, int duration){
            AuthUser user = new AuthUser();
            user.setEmail(registerRequest.getEmail());
            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
            user.setRoles(Collections.singletonList(role));
            user.setUsername(registerRequest.getUsername());
+           user.setEmailVerificationCode(hashedEmailCode);
+           user.setEmailVerificationCodeExpiryDate(LocalDateTime.now().plusMinutes(duration));
            return user;
     }
 

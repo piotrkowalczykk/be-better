@@ -1,11 +1,10 @@
 package com.kowal.backend.security.config;
 
-import com.kowal.backend.security.service.JWTGenerator;
+import com.kowal.backend.security.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,13 +21,13 @@ public class SecurityConfig {
 
     private JWTAuthEntryPoint jwtAuthEntryPoint;
     private CustomUserDetailsService customUserDetailsService;
-    private JWTGenerator jwtGenerator;
+    private JWTService jwtService;
 
     @Autowired
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JWTAuthEntryPoint jwtAuthEntryPoint, JWTGenerator jwtGenerator){
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JWTAuthEntryPoint jwtAuthEntryPoint, JWTService jwtService){
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
-        this.jwtGenerator = jwtGenerator;
+        this.jwtService = jwtService;
     }
 
     @Bean
@@ -56,6 +55,6 @@ public class SecurityConfig {
 
     @Bean
     public JWTAuthenticationFilter jwtAuthenticationFilter(){
-        return new JWTAuthenticationFilter(jwtGenerator, customUserDetailsService);
+        return new JWTAuthenticationFilter(jwtService, customUserDetailsService);
     }
 }

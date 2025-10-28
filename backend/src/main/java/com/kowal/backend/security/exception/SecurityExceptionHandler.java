@@ -23,4 +23,16 @@ public class SecurityExceptionHandler {
         return ResponseEntity.status(exception.getStatus()).body(response);
     }
 
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailSendingException exception, HttpServletRequest request){
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getStatus().value(),
+                exception.getStatus().getReasonPhrase(),
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(exception.getStatus()).body(response);
+    }
+
 }
