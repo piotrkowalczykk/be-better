@@ -1,13 +1,7 @@
 package com.kowal.backend.security.controller;
 
-import com.kowal.backend.security.dto.request.LoginRequest;
-import com.kowal.backend.security.dto.request.RegisterRequest;
-import com.kowal.backend.security.dto.request.ResendVerificationCodeRequest;
-import com.kowal.backend.security.dto.request.ValidateEmailRequest;
-import com.kowal.backend.security.dto.response.LoginResponse;
-import com.kowal.backend.security.dto.response.RegisterResponse;
-import com.kowal.backend.security.dto.response.ResendVerificationCodeResponse;
-import com.kowal.backend.security.dto.response.ValidateEmailResponse;
+import com.kowal.backend.security.dto.request.*;
+import com.kowal.backend.security.dto.response.*;
 import com.kowal.backend.security.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +41,18 @@ public class AuthController {
     @PostMapping("/resend-email-verification-code")
     public ResponseEntity<ResendVerificationCodeResponse> resendEmailVerificationCode(@RequestBody ResendVerificationCodeRequest resendVerificationCodeRequest){
         ResendVerificationCodeResponse response = authService.resendEmailVerificationCode(resendVerificationCodeRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        ResetPasswordResponse response = authService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/send-reset-password-code")
+    public ResponseEntity<SendResetPasswordCodeResponse> resetPassword(@RequestBody SendResetPasswordCodeRequest sendResetPasswordCodeRequest){
+        SendResetPasswordCodeResponse response = authService.sendResetPasswordCode(sendResetPasswordCodeRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -1,13 +1,7 @@
 package com.kowal.backend.security.service;
 
-import com.kowal.backend.security.dto.request.LoginRequest;
-import com.kowal.backend.security.dto.request.RegisterRequest;
-import com.kowal.backend.security.dto.request.ResendVerificationCodeRequest;
-import com.kowal.backend.security.dto.request.ValidateEmailRequest;
-import com.kowal.backend.security.dto.response.LoginResponse;
-import com.kowal.backend.security.dto.response.RegisterResponse;
-import com.kowal.backend.security.dto.response.ResendVerificationCodeResponse;
-import com.kowal.backend.security.dto.response.ValidateEmailResponse;
+import com.kowal.backend.security.dto.request.*;
+import com.kowal.backend.security.dto.response.*;
 
 public interface AuthService {
     public RegisterResponse register(RegisterRequest registerRequest);
@@ -15,4 +9,6 @@ public interface AuthService {
     public ValidateEmailResponse validateEmail(ValidateEmailRequest validateEmailRequest);
     public String generateEmailCode();
     public ResendVerificationCodeResponse resendEmailVerificationCode(ResendVerificationCodeRequest resendVerificationCodeRequest);
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
+    public SendResetPasswordCodeResponse sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest);
 }

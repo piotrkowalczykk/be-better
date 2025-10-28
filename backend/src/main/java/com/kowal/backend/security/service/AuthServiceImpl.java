@@ -1,13 +1,7 @@
 package com.kowal.backend.security.service;
 
-import com.kowal.backend.security.dto.request.LoginRequest;
-import com.kowal.backend.security.dto.request.RegisterRequest;
-import com.kowal.backend.security.dto.request.ResendVerificationCodeRequest;
-import com.kowal.backend.security.dto.request.ValidateEmailRequest;
-import com.kowal.backend.security.dto.response.LoginResponse;
-import com.kowal.backend.security.dto.response.RegisterResponse;
-import com.kowal.backend.security.dto.response.ResendVerificationCodeResponse;
-import com.kowal.backend.security.dto.response.ValidateEmailResponse;
+import com.kowal.backend.security.dto.request.*;
+import com.kowal.backend.security.dto.response.*;
 import com.kowal.backend.security.exception.EmailAlreadyUsedException;
 import com.kowal.backend.security.exception.EmailSendingException;
 import com.kowal.backend.security.mapper.AuthUserMapper;
@@ -113,7 +107,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResendVerificationCodeResponse resendEmailVerificationCode(ResendVerificationCodeRequest resendVerificationCodeRequest) {
-
         AuthUser user = authUserRepository.findByEmail(resendVerificationCodeRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -140,6 +133,52 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        AuthUser user = authUserRepository.findByEmail(resetPasswordRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        boolean isCodeValid = passwordEncoder.matches(resetPasswordRequest.getCode(), user.getPasswordResetCode());
+        boolean isCodeExpired = user.getPasswordResetCodeExpiryDate().isBefore(LocalDateTime.now());
+
+        if(!isCodeValid)
+            return new ResetPasswordResponse("Invalid reset password code");
+
+        if(isCodeExpired)
+            return new ResetPasswordResponse("Reset password code has expired");
+
+        user.setPasswordResetCode(null);
+        user.setPasswordResetCodeExpiryDate(null);
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        authUserRepository.save(user);
+
+        return new ResetPasswordResponse("Password reset successfully");
+    }
+
+    @Override
+    public SendResetPasswordCodeResponse sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest) {
+        AuthUser user = authUserRepository.findByEmail(sendResetPasswordCodeRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String resetCode = generateEmailCode();
+        String hashedResetCode = passwordEncoder.encode(resetCode);
+
+        user.setPasswordResetCodeExpiryDate(LocalDateTime.now().plusMinutes(DURATION_IN_MINUTES));
+        user.setPasswordResetCode(hashedResetCode);
+        authUserRepository.save(user);
+
+        String subject = "Reset Password";
+        String content = String.format("Enter this code to reset your password: %s. The code will expire in %s minutes.", resetCode, DURATION_IN_MINUTES);
+
+        try {
+            emailService.sendEmail(user.getEmail(), subject, content);
+        } catch (MessagingException e){
+            throw new EmailSendingException("Error sending reset password email");
+        }
+
+        return new SendResetPasswordCodeResponse("Reset password code sent successfully");
+    }
+
+    @Override
     public String generateEmailCode() {
         SecureRandom random = new SecureRandom();
         StringBuilder code = new StringBuilder();
@@ -148,6 +187,4 @@ public class AuthServiceImpl implements AuthService {
         }
         return code.toString();
     }
-
-
 }
