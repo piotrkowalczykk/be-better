@@ -8,7 +8,7 @@ public interface AuthService {
     public LoginResponse login(LoginRequest loginRequest);
     public ValidateEmailResponse validateEmail(ValidateEmailRequest validateEmailRequest);
     public String generateEmailCode();
-    public ResendVerificationCodeResponse resendEmailVerificationCode(ResendVerificationCodeRequest resendVerificationCodeRequest);
+    public ResendVerificationCodeResponse resendEmailVerificationCode(String email);
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
     public SendResetPasswordCodeResponse sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest);
 }

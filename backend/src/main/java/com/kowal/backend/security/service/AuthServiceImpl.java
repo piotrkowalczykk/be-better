@@ -2,8 +2,7 @@ package com.kowal.backend.security.service;
 
 import com.kowal.backend.security.dto.request.*;
 import com.kowal.backend.security.dto.response.*;
-import com.kowal.backend.security.exception.EmailAlreadyUsedException;
-import com.kowal.backend.security.exception.EmailSendingException;
+import com.kowal.backend.security.exception.*;
 import com.kowal.backend.security.mapper.AuthUserMapper;
 import com.kowal.backend.security.model.AuthUser;
 import com.kowal.backend.security.model.Role;
@@ -12,6 +11,8 @@ import com.kowal.backend.security.repository.RoleRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Role role = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("Default role USER not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Default role USER not found"));
         String emailCode = generateEmailCode();
         String hashedEmailCode = passwordEncoder.encode(emailCode);
 
@@ -74,19 +75,25 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()
-        ));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtService.generateToken(authentication);
-        return new LoginResponse(token);
+        try{
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(), loginRequest.getPassword()
+            ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = jwtService.generateToken(authentication);
+            return new LoginResponse(token);
+        } catch (BadCredentialsException e){
+            throw new InvalidCredentialsException("Invalid email or password");
+        } catch (DisabledException e){
+            resendEmailVerificationCode(loginRequest.getEmail());
+            throw new EmailNotVerifiedException("Email is not verified. Please check your inbox.");
+        }
     }
 
     @Override
     public ValidateEmailResponse validateEmail(ValidateEmailRequest validateEmailRequest) {
         AuthUser user = authUserRepository.findByEmail(validateEmailRequest.getEmail()).
-                orElseThrow(() -> new IllegalArgumentException("User not found"));
+                orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean isCodeValid = passwordEncoder.matches(validateEmailRequest.getCode(), user.getEmailVerificationCode());
         boolean isCodeExpired = user.getEmailVerificationCodeExpiryDate().isBefore(LocalDateTime.now());
@@ -106,9 +113,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResendVerificationCodeResponse resendEmailVerificationCode(ResendVerificationCodeRequest resendVerificationCodeRequest) {
-        AuthUser user = authUserRepository.findByEmail(resendVerificationCodeRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public ResendVerificationCodeResponse resendEmailVerificationCode(String email) {
+        AuthUser user = authUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if(user.isEmailVerified())
             return new ResendVerificationCodeResponse("Email is already verified");
@@ -135,7 +142,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
         AuthUser user = authUserRepository.findByEmail(resetPasswordRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean isCodeValid = passwordEncoder.matches(resetPasswordRequest.getCode(), user.getPasswordResetCode());
         boolean isCodeExpired = user.getPasswordResetCodeExpiryDate().isBefore(LocalDateTime.now());
@@ -157,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public SendResetPasswordCodeResponse sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest) {
         AuthUser user = authUserRepository.findByEmail(sendResetPasswordCodeRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         String resetCode = generateEmailCode();
         String hashedResetCode = passwordEncoder.encode(resetCode);

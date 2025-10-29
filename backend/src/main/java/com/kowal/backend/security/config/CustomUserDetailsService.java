@@ -30,7 +30,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AuthUser user = authUserRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
-        return new User(user.getEmail(), user.getPassword(), mapRolesToGrantedAuthorities(user.getRoles()));
+
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                user.isEmailVerified(),
+                true,
+                true,
+                true,
+                mapRolesToGrantedAuthorities(user.getRoles())
+        );
     }
 
     private Collection<GrantedAuthority> mapRolesToGrantedAuthorities(List<Role> roles){
