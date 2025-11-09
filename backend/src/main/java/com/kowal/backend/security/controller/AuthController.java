@@ -6,11 +6,9 @@ import com.kowal.backend.security.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -34,25 +32,25 @@ public class AuthController {
     }
 
     @PostMapping("/validate-email")
-    public ResponseEntity<ValidateEmailResponse> validateEmail(@RequestBody ValidateEmailRequest validateEmailRequest){
+    public ResponseEntity<ValidateEmailResponse> validateEmail(@RequestBody @Valid ValidateEmailRequest validateEmailRequest){
         ValidateEmailResponse response = authService.validateEmail(validateEmailRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/resend-email-verification-code")
-    public ResponseEntity<ResendVerificationCodeResponse> resendEmailVerificationCode(@RequestBody ResendVerificationCodeRequest resendVerificationCodeRequest){
+    public ResponseEntity<ResendVerificationCodeResponse> resendEmailVerificationCode(@RequestBody @Valid ResendVerificationCodeRequest resendVerificationCodeRequest){
         ResendVerificationCodeResponse response = authService.resendEmailVerificationCode(resendVerificationCodeRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest){
         ResetPasswordResponse response = authService.resetPassword(resetPasswordRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/send-reset-password-code")
-    public ResponseEntity<SendResetPasswordCodeResponse> resetPassword(@RequestBody SendResetPasswordCodeRequest sendResetPasswordCodeRequest){
+    public ResponseEntity<SendResetPasswordCodeResponse> resetPassword(@RequestBody @Valid SendResetPasswordCodeRequest sendResetPasswordCodeRequest){
         SendResetPasswordCodeResponse response = authService.sendResetPasswordCode(sendResetPasswordCodeRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

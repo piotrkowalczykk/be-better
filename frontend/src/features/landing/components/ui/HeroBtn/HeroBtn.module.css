@@ -1,0 +1,8 @@
+.heroBtn{
+    margin: 1rem;
+    padding: 0.5em 2em;
+    border: none;
+    font-weight: bold;
+    border: 1px solid yellow;
+    letter-spacing: 3px;
+}
