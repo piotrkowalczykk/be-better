@@ -1,0 +1,88 @@
+.aboutContainer{
+    height: 220vh;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.aboutSection1, .aboutSection2{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100vh;
+    width: 100%;
+}
+.aboutSection3{
+    width: 80%;
+    display: flex;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    color: white;
+    gap: 0;
+}
+
+.textContainer{
+    width: 40%;
+}
+
+.title{
+    font-size: 1.5rem;
+    color: yellow;
+    margin-bottom: 1rem;
+}
+
+.text{
+    color: white;
+    line-height: 1.4;
+}
+
+.imgContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 80vh;
+    overflow: visible;
+    background: radial-gradient(circle,rgb(255, 255, 255) 0%, rgb(255, 255, 0) 0%, rgba(0, 0, 0, 1) 60%);
+    background-size: cover;
+    background-position: center;
+}
+
+.imgAbout{
+    z-index: 1;
+    object-fit: contain;
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+}
+
+.aboutSection2 .imgAbout {
+    width: 50%;
+}
+
+.aboutData{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-right: 1px solid white;
+    width: 30%;
+    height: 100%;
+}
+
+.title2{
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.text2{
+    color: yellow;
+}
+
+.aboutData:last-child {
+    border-right: none;
+}
