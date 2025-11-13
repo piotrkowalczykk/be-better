@@ -10,6 +10,8 @@ import com.kowal.backend.security.repository.AuthUserRepository;
 import com.kowal.backend.security.repository.RoleRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -19,8 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -91,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ValidateEmailResponse validateEmail(ValidateEmailRequest validateEmailRequest) {
+    public ResponseEntity<ValidateEmailResponse> validateEmail(ValidateEmailRequest validateEmailRequest) {
         AuthUser user = authUserRepository.findByEmail(validateEmailRequest.getEmail()).
                 orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -99,48 +103,48 @@ public class AuthServiceImpl implements AuthService {
         boolean isCodeExpired = user.getEmailVerificationCodeExpiryDate().isBefore(LocalDateTime.now());
 
         if(!isCodeValid)
-            return new ValidateEmailResponse("Invalid verification code");
-
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ValidateEmailResponse("Invalid verification code"));
         if(isCodeExpired)
-            return new ValidateEmailResponse("Verification code has expired");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ValidateEmailResponse("Verification code has expired"));
 
         user.setEmailVerificationCode(null);
         user.setEmailVerificationCodeExpiryDate(null);
         user.setEmailVerified(true);
         authUserRepository.save(user);
 
-        return new ValidateEmailResponse("Email successfully verified");
+        return ResponseEntity.status(HttpStatus.OK).body(new ValidateEmailResponse("Email successfully verified"));
     }
 
     @Override
     public ResendVerificationCodeResponse resendEmailVerificationCode(String email) {
-        AuthUser user = authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        Optional<AuthUser> user = authUserRepository.findByEmail(email);
 
-        if(user.isEmailVerified())
-            return new ResendVerificationCodeResponse("Email is already verified");
+        if(user.isPresent()){
+            if(user.get().isEmailVerified())
+                return new ResendVerificationCodeResponse("Email is already verified");
 
-        String emailCode = generateEmailCode();
-        String hashedEmailCode = passwordEncoder.encode(emailCode);
+            String emailCode = generateEmailCode();
+            String hashedEmailCode = passwordEncoder.encode(emailCode);
 
-        user.setEmailVerificationCodeExpiryDate(LocalDateTime.now().plusMinutes(DURATION_IN_MINUTES));
-        user.setEmailVerificationCode(hashedEmailCode);
-        authUserRepository.save(user);
+            user.get().setEmailVerificationCodeExpiryDate(LocalDateTime.now().plusMinutes(DURATION_IN_MINUTES));
+            user.get().setEmailVerificationCode(hashedEmailCode);
+            authUserRepository.save(user.get());
 
-        String subject = "Email Verification";
-        String content = String.format("Enter this code to verify your email: %s. The code will expire in %s minutes.", emailCode, DURATION_IN_MINUTES);
+            String subject = "Email Verification";
+            String content = String.format("Enter this code to verify your email: %s. The code will expire in %s minutes.", emailCode, DURATION_IN_MINUTES);
 
-        try {
-            emailService.sendEmail(user.getEmail(), subject, content);
-        } catch (MessagingException e){
-            throw new EmailSendingException("Error sending verification email");
+            try {
+                emailService.sendEmail(user.get().getEmail(), subject, content);
+            } catch (MessagingException e){
+                throw new EmailSendingException("Error sending verification email");
+            }
         }
 
-        return new ResendVerificationCodeResponse("Verification code sent successfully");
+        return new ResendVerificationCodeResponse("If an account with that email exists, a verification code sent successfully");
     }
 
     @Override
-    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public ResponseEntity<ResetPasswordResponse> resetPassword(ResetPasswordRequest resetPasswordRequest) {
         AuthUser user = authUserRepository.findByEmail(resetPasswordRequest.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -148,41 +152,44 @@ public class AuthServiceImpl implements AuthService {
         boolean isCodeExpired = user.getPasswordResetCodeExpiryDate().isBefore(LocalDateTime.now());
 
         if(!isCodeValid)
-            return new ResetPasswordResponse("Invalid reset password code");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResetPasswordResponse("Invalid reset password code"));
 
         if(isCodeExpired)
-            return new ResetPasswordResponse("Reset password code has expired");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResetPasswordResponse("Reset password code has expired"));
 
         user.setPasswordResetCode(null);
         user.setPasswordResetCodeExpiryDate(null);
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         authUserRepository.save(user);
 
-        return new ResetPasswordResponse("Password reset successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(new ResetPasswordResponse("Password reset successfully"));
     }
 
     @Override
     public SendResetPasswordCodeResponse sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest) {
-        AuthUser user = authUserRepository.findByEmail(sendResetPasswordCodeRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        Optional<AuthUser> user = authUserRepository.findByEmail(sendResetPasswordCodeRequest.getEmail());
 
-        String resetCode = generateEmailCode();
-        String hashedResetCode = passwordEncoder.encode(resetCode);
+        if(user.isPresent()){
+            String resetCode = generateEmailCode();
+            String hashedResetCode = passwordEncoder.encode(resetCode);
 
-        user.setPasswordResetCodeExpiryDate(LocalDateTime.now().plusMinutes(DURATION_IN_MINUTES));
-        user.setPasswordResetCode(hashedResetCode);
-        authUserRepository.save(user);
+            user.get().setPasswordResetCodeExpiryDate(LocalDateTime.now().plusMinutes(DURATION_IN_MINUTES));
+            user.get().setPasswordResetCode(hashedResetCode);
+            authUserRepository.save(user.get());
 
-        String subject = "Reset Password";
-        String content = String.format("Enter this code to reset your password: %s. The code will expire in %s minutes.", resetCode, DURATION_IN_MINUTES);
+            String subject = "Reset Password";
+            String content = String.format("Enter this code to reset your password: %s. The code will expire in %s minutes.", resetCode, DURATION_IN_MINUTES);
 
-        try {
-            emailService.sendEmail(user.getEmail(), subject, content);
-        } catch (MessagingException e){
-            throw new EmailSendingException("Error sending reset password email");
+            try {
+                emailService.sendEmail(user.get().getEmail(), subject, content);
+            } catch (MessagingException e){
+                throw new EmailSendingException("Error sending reset password email");
+            }
         }
 
-        return new SendResetPasswordCodeResponse("Reset password code sent successfully");
+        return new SendResetPasswordCodeResponse(
+                "If an account with that email exists, a reset code has been sent"
+        );
     }
 
     @Override

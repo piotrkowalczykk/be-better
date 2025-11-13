@@ -33,8 +33,7 @@ public class AuthController {
 
     @PostMapping("/validate-email")
     public ResponseEntity<ValidateEmailResponse> validateEmail(@RequestBody @Valid ValidateEmailRequest validateEmailRequest){
-        ValidateEmailResponse response = authService.validateEmail(validateEmailRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return authService.validateEmail(validateEmailRequest);
     }
 
     @PostMapping("/resend-email-verification-code")
@@ -45,8 +44,7 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest){
-        ResetPasswordResponse response = authService.resetPassword(resetPasswordRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return authService.resetPassword(resetPasswordRequest);
     }
 
     @PostMapping("/send-reset-password-code")
