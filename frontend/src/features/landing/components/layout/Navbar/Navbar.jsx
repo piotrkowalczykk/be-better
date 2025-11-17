@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import classes from "./Navbar.module.css";
 import { HeroBtn } from "../../ui/HeroBtn/HeroBtn";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
 
@@ -24,7 +25,7 @@ export const Navbar = () => {
                 <a href="#about" className={classes.navLink}>About us</a>
                 <a href="#contact" className={classes.navLink}>Contact</a>
             </div>
-            <HeroBtn bgColor="yellow" color="black" bgHoverColor="black" colorHover="yellow" text="SIGN IN"/>
+            <HeroBtn bgColor="yellow" color="black" bgHoverColor="black" colorHover="yellow" text="SIGN IN" to="/login"/>
         </div>
     );
 }

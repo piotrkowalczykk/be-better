@@ -1,0 +1,11 @@
+.authLayoutContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    height: 100vh;
+    background-image: url("/public/hero-bg.jpg");
+    background-position: center center;
+    background-size: cover;
+}

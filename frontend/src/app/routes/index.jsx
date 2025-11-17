@@ -4,22 +4,23 @@ import { Unauthorized } from "../../features/auth/pages/Unauthorized";
 import { RoleBasedRoute } from "../routes/RoleBasedRoute";
 import { Login } from "../../features/auth/pages/Login";
 import { Home } from "../../features/landing/pages/Home/Home"
+import { Register } from "../../features/auth/pages/Register";
+import { VerifyEmail } from "../../features/auth/pages/VerifyEmail";
+import { ResetPassword } from "../../features/auth/pages/ResetPassword";
+import { PublicRoute } from "./PublicRoute";
 
 export default function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Home/>} />
-        <Route 
-            path="/dashboard" 
-            element={
-              <RoleBasedRoute role="USER">
-                <Dashboard />
-              </RoleBasedRoute>
-            } 
-        />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/" element={<PublicRoute><Home/></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
+        <Route path="/verify-email" element={<PublicRoute><VerifyEmail/></PublicRoute>} />
+        <Route path="/reset-password" element={<PublicRoute><ResetPassword/></PublicRoute>} />
         <Route path="/unauthorized" element={<Unauthorized/>} />
+      
+        <Route path="/dashboard" element={<RoleBasedRoute role="USER"><Dashboard /></RoleBasedRoute>} />
       </Routes>
     </Router>
   )

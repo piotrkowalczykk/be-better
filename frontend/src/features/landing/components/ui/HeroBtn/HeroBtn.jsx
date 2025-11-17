@@ -1,7 +1,9 @@
 import classes from "./HeroBtn.module.css"
+import { Link } from "react-router-dom";
 
-export const HeroBtn = ({text, bgColor, color, bgHoverColor, colorHover}) => {
+export const HeroBtn = ({text, bgColor, color, bgHoverColor, colorHover, to}) => {
     return(
+        <Link to={to}>
         <button 
         className={classes.heroBtn}
         style={{
@@ -13,5 +15,6 @@ export const HeroBtn = ({text, bgColor, color, bgHoverColor, colorHover}) => {
         }}>
             {text}
         </button>
+        </Link>
     );
 }

@@ -5,19 +5,19 @@ import { AuthForm } from "../components/layout/AuthForm/AuthForm";
 import { AuthLayout } from "../components/layout/AuthLayout/AuthLayout";
 import { Link } from "react-router-dom";
 
-export const Login = () => {
-    const { login } = useAuth();
+export const Register = () => {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         email: "",
-        password: ""
+        password: "",
+        username: ""
     });
-    const [error, setError] = useState();
+    const [error, setError] = useState({})
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:8080/auth/login",
+            const response = await fetch("http://localhost:8080/auth/register",
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
@@ -27,18 +27,13 @@ export const Login = () => {
 
             if(response.ok){
                 const data = await response.json();
-                login(data.token);
-                navigate("/dashboard");
+                sessionStorage.setItem("email", data.email);
+                navigate("/verify-email");
             } else{
                 const errorData = await response.json();
-                if (response.status === 403 && errorData.message === "Email is not verified. Please check your inbox.") {
-                    sessionStorage.setItem("email", credentials.email);
-                    navigate("/verify-email");
-                } else {
-                    setError(errorData.message);
-                    const messages = Object.values(errorData.errors).join("\n");
-                    alert(messages);
-                }
+                setError(errorData.errors);
+                const messages = Object.values(errorData.errors).join("\n");
+                alert(messages);
             }
         } catch (error){
             console.log(error);
@@ -70,18 +65,25 @@ export const Login = () => {
         onChange: handleInputChange,
         placeholder: "Password",
     },
+    {
+        name: "username",
+        type: "username",
+        value: credentials.username,
+        onChange: handleInputChange,
+        placeholder: "Username",
+    },
     ];
 
     return (
         <AuthLayout>
             <AuthForm 
-                title="Sign in"
+                title="Sign up"
                 fields={fields}
-                submitText="Sign in"
+                submitText="Sign up"
                 onSubmit={handleSubmit}
                 footer={
                     <>
-                        <p>Don't have an account? <Link to="/register">Join now</Link></p>
+                        <p>Already have an account? <Link to="/login">Sign in</Link></p>
                         <br />
                         <p>-- Or -- </p>
                         <br />
