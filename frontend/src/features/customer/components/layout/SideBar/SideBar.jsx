@@ -1,26 +1,83 @@
+import { useEffect, useState } from "react";
+import { DashboardIcon, ExitIcon, HomeIcon, LogoutIcon, SettingsIcon, MenuIcon, DumbbellIcon, RoutinesIcon } from "../../../../../app/icons/Icons";
 import classes from "./SideBar.module.css";
 import { Link  } from "react-router-dom";
 
 export const SideBar = () => {
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        }
+
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+    
     return (
-        <div className={classes.navContainer}>
-            <ul>
-                <span>BEEBETTER</span>
-                <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/></svg></button>
-                <li>
-                    <Link to="Home">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>                        
-                        <span>Home</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link to="Home">Dashboard</Link>
-                </li>
-                <li>
-                    <Link to="Home">Settings</Link>
-                </li>
-            </ul>
+        <>
+            {isMobile && (
+                <div className={classes.mobileTopbarContainer}>
+                    <button 
+                        className={classes.mobileTopbarBtn}
+                        onClick={() => setIsOpen(!isOpen)}>
+                        <MenuIcon className={classes.mobileTopbarBtnIcon} />
+                    </button>
+                </div>
+            )}
             
-        </div>
+            {isMobile && isOpen && (
+                <div className={classes.overlay} onClick={() => setIsOpen(false)}/>
+            )}
+            
+                <div className={`${classes.sidebarContainer} ${isMobile ? classes.mobile : ""} ${isOpen ? classes.open : classes.closed}`}>
+                    <div className={classes.sidebarHeader}>
+                        <Link className={classes.logoContainer} to="/dashboard">
+                            <h1 className={classes.logo}><span style={{color: "yellow"}}>BEE</span>BETTER</h1> 
+                        </Link>
+
+                        {isMobile && (
+                            <button 
+                            className={classes.sidebarBtn}
+                            onClick={() => setIsOpen(!isOpen)}>
+                            <ExitIcon />
+                        </button>
+                        )}
+                    </div>
+                    <div className={classes.sidebarItems}>
+                        <Link className={classes.sidebarItem} to="/home">
+                            <HomeIcon className={classes.sidebarItemIcon} />                       
+                            <span className={classes.sidebarItemText}>Home</span>
+                        </Link>
+                        <Link className={classes.sidebarItem} to="/dashboard">
+                            <DashboardIcon className={classes.sidebarItemIcon} />                       
+                            <span className={classes.sidebarItemText}>Dashboard</span>
+                        </Link>
+                        <Link className={classes.sidebarItem} to="/exercises">
+                            <DumbbellIcon className={classes.sidebarItemIcon} />                       
+                            <span className={classes.sidebarItemText}>Exercises</span>
+                        </Link>
+                        <Link className={classes.sidebarItem} to="/routines">
+                            <RoutinesIcon className={classes.sidebarItemIcon} />                       
+                            <span className={classes.sidebarItemText}>Routines</span>
+                        </Link>
+                        <Link className={classes.sidebarItem} to="/settings">
+                            <SettingsIcon className={classes.sidebarItemIcon} />                       
+                            <span className={classes.sidebarItemText}>Settings</span>
+                        </Link>
+                    </div>
+                    <div className={classes.sidebarFooter}>
+                        <Link className={classes.sidebarItem} to="/settings">
+                            <LogoutIcon className={classes.sidebarItemIcon}/>
+                            <span className={classes.sidebarItemText}>Logout</span>
+                        </Link>
+                    </div>  
+                </div>
+        </>
     );
 }

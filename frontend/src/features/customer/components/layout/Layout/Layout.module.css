@@ -1,0 +1,24 @@
+:root{
+    --sidebar-width: 250px;
+    --content-bg: #444444;
+}
+
+.layoutContainer{
+    display: flex;
+}
+
+.layoutContent {
+    margin-left: var(--sidebar-width);
+    padding: 1.5em;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--content-bg);
+}
+
+@media (max-width: 768px) {
+    .layoutContent {
+        margin-left: 0;
+        margin-top: 55px;
+    }
+}

@@ -8,6 +8,7 @@ import { Register } from "../../features/auth/pages/Register";
 import { VerifyEmail } from "../../features/auth/pages/VerifyEmail";
 import { ResetPassword } from "../../features/auth/pages/ResetPassword";
 import { PublicRoute } from "./PublicRoute";
+import { Routines } from "../../features/customer/pages/Routines/Routines";
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AppRoutes() {
         <Route path="/unauthorized" element={<Unauthorized/>} />
       
         <Route path="/dashboard" element={<RoleBasedRoute role="USER"><Dashboard /></RoleBasedRoute>} />
+        <Route path="/routines" element={<RoleBasedRoute role="USER"><Routines /></RoleBasedRoute>} />
       </Routes>
     </Router>
   )

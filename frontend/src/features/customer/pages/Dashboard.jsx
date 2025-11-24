@@ -1,10 +1,9 @@
-import { SideBar } from "../components/layout/SideBar/SideBar";
+import { Layout } from "../components/layout/Layout/Layout";
 
 export const Dashboard = () => {
     return (
-        <>
-        <SideBar />
-            <p>Siema</p>
-        </>
+        <Layout>
+            Siema
+        </Layout>
     );
 }
