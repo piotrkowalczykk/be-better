@@ -66,12 +66,15 @@
     width: 100%;
 }
 
-.sidebarItem:hover {
+.sidebarItem:hover,
+.sidebarItem.active {
     background: var(--accent);
 }
 
 .sidebarItem:hover .sidebarItemIcon,
-.sidebarItem:hover .sidebarItemText {
+.sidebarItem.active .sidebarItemIcon,
+.sidebarItem:hover .sidebarItemText,
+.sidebarItem.active .sidebarItemText {
     fill: var(--text-dark);
     color: var(--text-dark);
 }

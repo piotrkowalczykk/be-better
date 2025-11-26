@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DashboardIcon, ExitIcon, HomeIcon, LogoutIcon, SettingsIcon, MenuIcon, DumbbellIcon, RoutinesIcon } from "../../../../../app/icons/Icons";
 import classes from "./SideBar.module.css";
-import { Link  } from "react-router-dom";
+import { Link, NavLink  } from "react-router-dom";
 
 export const SideBar = () => {
 
@@ -50,26 +50,36 @@ export const SideBar = () => {
                         )}
                     </div>
                     <div className={classes.sidebarItems}>
-                        <Link className={classes.sidebarItem} to="/home">
+                        <NavLink className={({ isActive }) =>
+        isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
+    } to="/home">
                             <HomeIcon className={classes.sidebarItemIcon} />                       
                             <span className={classes.sidebarItemText}>Home</span>
-                        </Link>
-                        <Link className={classes.sidebarItem} to="/dashboard">
+                        </NavLink>
+                        <NavLink className={({ isActive }) =>
+        isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
+    } to="/dashboard">
                             <DashboardIcon className={classes.sidebarItemIcon} />                       
                             <span className={classes.sidebarItemText}>Dashboard</span>
-                        </Link>
-                        <Link className={classes.sidebarItem} to="/exercises">
+                        </NavLink>
+                        <NavLink className={({ isActive }) =>
+        isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
+    } to="/exercises">
                             <DumbbellIcon className={classes.sidebarItemIcon} />                       
                             <span className={classes.sidebarItemText}>Exercises</span>
-                        </Link>
-                        <Link className={classes.sidebarItem} to="/routines">
+                        </NavLink>
+                        <NavLink className={({ isActive }) =>
+        isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
+    } to="/routines">
                             <RoutinesIcon className={classes.sidebarItemIcon} />                       
                             <span className={classes.sidebarItemText}>Routines</span>
-                        </Link>
-                        <Link className={classes.sidebarItem} to="/settings">
+                        </NavLink>
+                        <NavLink className={({ isActive }) =>
+        isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
+    } to="/settings">
                             <SettingsIcon className={classes.sidebarItemIcon} />                       
                             <span className={classes.sidebarItemText}>Settings</span>
-                        </Link>
+                        </NavLink>
                     </div>
                     <div className={classes.sidebarFooter}>
                         <Link className={classes.sidebarItem} to="/settings">
