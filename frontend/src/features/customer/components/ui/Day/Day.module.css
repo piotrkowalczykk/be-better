@@ -1,0 +1,51 @@
+.dayContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 150px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 0.5em;
+    transition: 0.2s all ease;
+}
+
+.dayContainer:hover{
+    opacity: 0.8;
+}
+
+.dayHeader{
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    width: 100%;
+    padding: 0.4em 0.4em;
+    border-radius: 5px;
+}
+
+.dayIcon{
+    width: 40px;
+    aspect-ratio: 1/1;
+    padding: 0.4em;
+    border-radius: 5px;
+}
+.dayTitle{
+    color: white;
+    font-weight: 300;
+    font-size: 0.7rem;
+}
+
+.dayMessageContainer{
+    padding: 0.5em;
+    height: max-content;
+    border-radius: 5px;
+}
+
+.dayMessage{
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    font-size: 0.6rem;
+    color: white;
+}
+

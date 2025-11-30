@@ -19,6 +19,6 @@ html, body {
   background-color: var(--second-color);
 }
 
-input, button, textarea, select {
+input, button, textarea, select, h2 {
     font-family: inherit;
 }

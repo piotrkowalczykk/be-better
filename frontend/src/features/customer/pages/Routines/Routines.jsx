@@ -42,21 +42,16 @@ export const Routines = () => {
                             </div>
                             <div className={classes.routinesInnerManageContainer1}>
                                 <CustomInput label="Frequency" name="color" type="select" value="Select unit" onChange="CO TO" />
-
-  <div className={classes.helpWrapper}>
-    <button 
-      className={classes.routinesHelpBtn}
-      onClick={() => setShowHelp(prev => !prev)}
-    >
-      <HelpIcon />
-    </button>
-
-    {showHelp && (
-      <div className={classes.helpTooltip}>
-        To jest twoja wiadomość / pomoc ✨
-      </div>
-    )}
-  </div>
+                                <div className={classes.helpWrapper}>
+                                    <button className={classes.routinesHelpBtn} onClick={() => setShowHelp(prev => !prev)}>
+                                        <HelpIcon />
+                                    </button>
+                                    {showHelp && (
+                                        <div className={classes.helpTooltip}>
+                                            Siema
+                                        </div>
+                                    )}
+                                </div>
                                 <div className={classes.routinesManageBtnContainer}>
                                     <button className={classes.routinesManageBtn}><ResetIcon /> CLEAR</button>
                                     <button className={classes.routinesManageBtn}><DeleteIcon /> DELETE</button>

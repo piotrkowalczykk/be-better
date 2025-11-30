@@ -1,0 +1,32 @@
+.dayCreatorContainer{
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+    gap: 1em;
+    border: 1px solid yellow;
+}
+
+.dayCreatorLeftContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    flex: 3;
+    border: 1px solid blue;
+}
+
+.dayDataSection{
+    flex: 1;
+    background-color: var(--first-color);
+}
+
+.dayExercises{
+    flex: 4;
+    background-color: var(--first-color);
+}
+
+.dayCreatorRightContainer{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: var(--first-color);
+}

@@ -1,0 +1,118 @@
+.exercisesContainer{
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+    gap: 1em;
+}
+
+.exercisesLeftContainer{
+    flex-shrink: 5;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    padding: 1.5em;
+    background-color: var(--first-color);
+    border-radius: 10px;
+    -webkit-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    -moz-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+}
+
+.exercisesRightContainer{
+    flex-shrink: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.exercisesDaysList{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    flex: 1;
+    padding: 1.5em;
+    background-color: var(--first-color);
+    border-radius: 10px;
+    -webkit-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    -moz-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+}
+
+.exercisesDaysListHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.exercisesAddBtn{
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    background-color: yellow;
+    width: 30px;
+    aspect-ratio: 1/1;
+    line-height: 30px;
+    border-radius: 50%;
+    font-weight: bold;
+    -webkit-box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+    -moz-box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+    box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+    transition: 0.2s all ease;
+}
+
+.exercisesAddBtn:hover{
+    opacity: 0.5;
+}
+
+.exercisesManageDay{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    flex: 1;
+    padding: 1.5em;
+    background-color: var(--first-color);
+    border-radius: 10px;
+    -webkit-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    -moz-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+}
+
+.exercisesTitle{
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1;
+    color: white;
+}
+
+.exercisesWeekPlannerContainer{
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-auto-rows: minmax(200px, 1fr);
+    gap: 1.5em;
+}
+
+.WeekPlannerItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em;
+    gap: 1em;
+    border-radius: 10px;
+    background-color: var(--second-color);
+}
+
+.WeekPlannerItemTitle{
+    font-weight: 200;
+    font-size: 1rem;
+    color: white;
+}
+
+@media only screen and (max-width: 820px) {
+    .exercisesContainer{
+        flex-direction: column;
+    }
+}

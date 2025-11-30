@@ -52,9 +52,9 @@ export const SideBar = () => {
                     <div className={classes.sidebarItems}>
                         <NavLink className={({ isActive }) =>
         isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
-    } to="/home">
+    } to="/feed">
                             <HomeIcon className={classes.sidebarItemIcon} />                       
-                            <span className={classes.sidebarItemText}>Home</span>
+                            <span className={classes.sidebarItemText}>Feed</span>
                         </NavLink>
                         <NavLink className={({ isActive }) =>
         isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
@@ -66,7 +66,7 @@ export const SideBar = () => {
         isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
     } to="/exercises">
                             <DumbbellIcon className={classes.sidebarItemIcon} />                       
-                            <span className={classes.sidebarItemText}>Exercises</span>
+                            <span className={classes.sidebarItemText}>Workout Planner</span>
                         </NavLink>
                         <NavLink className={({ isActive }) =>
         isActive ? `${classes.sidebarItem} ${classes.active}` : classes.sidebarItem
