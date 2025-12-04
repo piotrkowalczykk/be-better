@@ -3,6 +3,7 @@ import { Layout } from "../../components/layout/Layout/Layout";
 import { Day } from "../../components/ui/Day/Day";
 import classes from "./Exercises.module.css";
 import { CustomInput } from "../../components/ui/CustomInput/CustomInput";
+import { AddIcon } from "../../../../app/icons/Icons";
 
 export const Exercises = () => {
     return (
@@ -43,7 +44,7 @@ export const Exercises = () => {
                         <div className={classes.exercisesDaysListHeader}>
                             <h2 className={classes.exercisesTitle}>Days</h2>
                             <NavLink to="/day-creator" className={classes.exercisesAddBtn}>
-                                +
+                                <AddIcon />
                             </NavLink>
                         </div>
                         

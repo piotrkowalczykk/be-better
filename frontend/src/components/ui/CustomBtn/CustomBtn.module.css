@@ -1,0 +1,19 @@
+.customBtnContainer{
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 80px;
+    padding: 0.25em 1em;
+    cursor: pointer;
+    transition: 0.2s all ease;
+    font-size: 0.75rem;
+    -webkit-box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+    -moz-box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+    box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
+}
+
+.customBtnContainer:hover{
+    opacity: 0.9;
+}
+

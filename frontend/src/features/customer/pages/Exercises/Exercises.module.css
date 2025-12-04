@@ -48,13 +48,14 @@
 }
 
 .exercisesAddBtn{
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-decoration: none;
     color: black;
     background-color: yellow;
     width: 30px;
     aspect-ratio: 1/1;
-    line-height: 30px;
     border-radius: 50%;
     font-weight: bold;
     -webkit-box-shadow: 4px 4px 0px 1px rgb(27, 26, 26);
@@ -78,6 +79,12 @@
     -webkit-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
     -moz-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
     box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+}
+
+.exercisesManageDayContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 }
 
 .exercisesTitle{

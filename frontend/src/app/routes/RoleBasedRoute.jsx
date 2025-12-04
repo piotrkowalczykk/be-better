@@ -8,7 +8,7 @@ export const RoleBasedRoute = ({children, role}) => {
     }
 
     if(!user)
-        return <Navigate to="/login" />
+        return <Navigate to="/" />
     
     if(user.role !== role){
         return <Navigate to="/unauthorized" />

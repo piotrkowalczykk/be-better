@@ -37,7 +37,7 @@ export const Routines = () => {
                             </div>
                             <div className={classes.routinesInnerManageContainer1}>
                                 <CustomInput label="Icon" name="icon" type="text" value="siema" onChange="CO TO" />
-                                <CustomInput label="Color" name="color" type="select" value="Select unit" onChange="CO TO" />
+                                <CustomInput label="Color" name="color" type="color" />
                                 <CustomInput label="Dashboard priority" name="scope" type="select" value="siema" onChange="CO TO" />
                             </div>
                             <div className={classes.routinesInnerManageContainer1}>

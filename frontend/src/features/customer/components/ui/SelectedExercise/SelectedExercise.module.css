@@ -1,0 +1,43 @@
+.selectedExerciseContainer{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--first-color);
+    padding: 1.5em;
+    border-radius: 10px;
+    gap: 1.5em;
+    -webkit-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    -moz-box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+    box-shadow: 6px 6px 0px 1px rgba(58, 54, 54, 1);
+}
+
+.selectedExerciseInfo{
+    display: flex;
+    flex: 1;
+    gap: 1em;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.selectedExerciseImgContainer{
+    width: 60px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.selectedExerciseImgContainer img{
+    width: 100%;
+}
+
+.selectedExerciseName{
+    color: yellow;
+}
+
+.selectedExerciseData{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    flex-wrap: wrap;
+}

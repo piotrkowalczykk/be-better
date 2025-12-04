@@ -1,0 +1,60 @@
+.modalWindowContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    z-index: 2;
+    background-color: var(--first-color);
+    border-radius: 10px;
+    padding: 1em;
+    padding-bottom: 1.5em;
+    gap: 1em;
+}
+
+.modalWindowOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 4;
+}
+
+.modalWindowtopBar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid var(--second-color);
+    padding-bottom: 1em;
+}
+
+.modalWindowTitle{
+    color: white;
+}
+
+.modalWindowtopBar button{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-75%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modalWindowBtnIcon:hover{
+    fill: yellow;
+}
+
+.modalWindowBtnIcon{
+    fill: white;
+}

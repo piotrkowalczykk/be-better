@@ -1,6 +1,6 @@
 import classes from "./CustomInput.module.css";
 
-export const CustomInput = ({ label, name, type, value, onChange }) => {
+export const CustomInput = ({ label, name, type, value, onChange, placeholder }) => {
     return (
         <div className={classes.formInputContainer}>
             <label htmlFor={name}>{label}</label>
@@ -11,6 +11,7 @@ export const CustomInput = ({ label, name, type, value, onChange }) => {
                 value={value}
                 onChange={onChange}
                 className={classes.formInput}
+                placeholder={placeholder}
             />
         </div>
     );

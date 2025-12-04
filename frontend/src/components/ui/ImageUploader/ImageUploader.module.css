@@ -1,0 +1,32 @@
+.imageUploaderContainer{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    align-items: center;
+    border: 1px dashed var(--second-color);
+    max-width: 150px;
+    width: 100%;
+    aspect-ratio: 1/1;
+}
+
+.imageUploaderInput{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: 3px solid blue;
+}
+
+.imageUploaderImgPreview{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imageUploaderIcon{
+    font-size: 2rem;
+    color: var(--second-color);
+}

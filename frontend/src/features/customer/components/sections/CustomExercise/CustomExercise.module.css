@@ -1,0 +1,10 @@
+.customExercisesContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.customExercisesContainer  > *:last-child{
+    margin-top: 0.75em;
+}

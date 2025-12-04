@@ -1,0 +1,14 @@
+.searchbarContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--second-color);
+    border-radius: 5px;
+}
+
+.searchbarIcon{
+    margin-left: 0.75em;
+    margin-right: 0.5em;
+    fill: white;
+    height: 100%;
+}
