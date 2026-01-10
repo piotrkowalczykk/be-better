@@ -1,8 +1,8 @@
 package com.kowal.backend.security.service;
 
+import com.kowal.backend.exception.security.*;
 import com.kowal.backend.security.dto.request.*;
 import com.kowal.backend.security.dto.response.*;
-import com.kowal.backend.security.exception.*;
 import com.kowal.backend.security.mapper.AuthUserMapper;
 import com.kowal.backend.security.model.AuthUser;
 import com.kowal.backend.security.model.Role;
@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;

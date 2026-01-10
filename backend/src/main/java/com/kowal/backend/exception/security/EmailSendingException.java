@@ -1,4 +1,4 @@
-package com.kowal.backend.security.exception;
+package com.kowal.backend.exception.security;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

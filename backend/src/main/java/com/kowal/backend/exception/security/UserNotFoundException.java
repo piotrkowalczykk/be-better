@@ -1,14 +1,14 @@
-package com.kowal.backend.security.exception;
+package com.kowal.backend.exception.security;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class RoleNotFoundException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
 
     private HttpStatus status;
 
-    public RoleNotFoundException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
         this.status = HttpStatus.NOT_FOUND;
     }

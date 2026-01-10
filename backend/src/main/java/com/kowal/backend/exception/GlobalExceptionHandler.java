@@ -1,6 +1,8 @@
-package com.kowal.backend.security.exception;
+package com.kowal.backend.exception;
 
-import com.kowal.backend.security.dto.response.ErrorResponse;
+import com.kowal.backend.exception.customer.RoutineNotFoundException;
+import com.kowal.backend.exception.dto.ErrorResponse;
+import com.kowal.backend.exception.security.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class SecurityExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletRequest request){
@@ -98,6 +100,18 @@ public class SecurityExceptionHandler {
 
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleRoleNotFoundException(RoleNotFoundException exception, HttpServletRequest request){
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getStatus().value(),
+                exception.getStatus().getReasonPhrase(),
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(exception.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(RoutineNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRoutineNotFoundException(RoutineNotFoundException exception, HttpServletRequest request){
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 exception.getStatus().value(),

@@ -1,4 +1,4 @@
-package com.kowal.backend.security.dto.response;
+package com.kowal.backend.exception.dto;
 
 import java.time.LocalDateTime;
 
