@@ -47,7 +47,10 @@
 }
 
 .dayExercises{
+    display: flex;
+    flex-direction: column;
     flex: 4;
+    gap: 1em;
 }
 
 .dayCreatorRightContainer{

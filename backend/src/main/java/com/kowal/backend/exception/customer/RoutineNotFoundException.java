@@ -4,12 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class RoutineNotFoundException extends RuntimeException {
-
-    private HttpStatus status;
-
-    public RoutineNotFoundException(String message) {
-        super(message);
-        this.status = HttpStatus.NOT_FOUND;
+public class RoutineNotFoundException extends CustomException {
+    public RoutineNotFoundException(Long routineId) {
+        super("Routine not found with ID " + routineId, HttpStatus.NOT_FOUND);
     }
 }
+

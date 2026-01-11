@@ -26,6 +26,7 @@ WHERE u.email = 'admin@test.com'
       WHERE ur.user_id = u.id AND ur.role_id = r.id
 );
 
+
 INSERT INTO user_roles (user_id, role_id)
 SELECT u.id, r.id
 FROM users u, roles r
@@ -35,3 +36,13 @@ WHERE u.email = 'admin@test.com'
       SELECT 1 FROM user_roles ur
       WHERE ur.user_id = u.id AND ur.role_id = r.id
 );
+
+
+
+INSERT INTO exercises (image, muscle_group, name)
+SELECT 'siema.jpg', 'bicpes', 'dumbbels-curls'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbels-curls');
+
+INSERT INTO exercises (image, muscle_group, name)
+SELECT 'siema.jpg', 'tricpes', 'dumbbels-push'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbels-push');

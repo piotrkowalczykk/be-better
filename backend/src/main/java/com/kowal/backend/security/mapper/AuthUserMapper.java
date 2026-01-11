@@ -5,12 +5,11 @@ import com.kowal.backend.security.dto.response.RegisterResponse;
 import com.kowal.backend.security.model.AuthUser;
 import com.kowal.backend.security.model.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-@Service
+@Component
 public class AuthUserMapper {
 
     public AuthUser mapRegisterRequestToAuthUser(RegisterRequest registerRequest, Role role, PasswordEncoder passwordEncoder, String hashedEmailCode, int duration){

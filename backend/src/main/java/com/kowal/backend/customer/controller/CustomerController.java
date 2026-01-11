@@ -1,9 +1,12 @@
 package com.kowal.backend.customer.controller;
 
-import com.kowal.backend.customer.dto.request.AddRoutineRequest;
-import com.kowal.backend.customer.dto.request.UpdateRoutineRequest;
+import com.kowal.backend.customer.dto.request.*;
+import com.kowal.backend.customer.dto.response.DayExerciseResponse;
+import com.kowal.backend.customer.dto.response.DayResponse;
+import com.kowal.backend.customer.dto.response.ExerciseResponse;
 import com.kowal.backend.customer.dto.response.RoutineResponse;
 import com.kowal.backend.customer.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +28,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add-routine")
-    public ResponseEntity<RoutineResponse> addRoutine(@RequestBody AddRoutineRequest addRoutineRequest,
+    public ResponseEntity<RoutineResponse> addRoutine(@Valid @RequestBody AddRoutineRequest addRoutineRequest,
                                                         @AuthenticationPrincipal UserDetails userDetails){
         String userEmail = userDetails.getUsername();
         RoutineResponse response = customerService.addRoutine(addRoutineRequest, userEmail);
@@ -63,4 +66,111 @@ public class CustomerController {
         RoutineResponse deletedRoutine = customerService.deleteRoutine(routineId, userEmail);
         return ResponseEntity.ok(deletedRoutine);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    @PostMapping("/add-day")
+    public ResponseEntity<DayResponse> addDay(@Valid @RequestBody AddDayRequest addDayRequest,
+                                                  @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        DayResponse response = customerService.addDay(addDayRequest, userEmail);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/days")
+    public ResponseEntity<List<DayResponse>> getAllDays(@AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        List<DayResponse> days = customerService.getAllDays(userEmail);
+        return ResponseEntity.ok(days);
+    }
+
+    @GetMapping("/days/{id}")
+    public ResponseEntity<DayResponse> getDayById(@PathVariable("id") Long dayId,
+                                                          @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        DayResponse day = customerService.getDayById(dayId, userEmail);
+        return ResponseEntity.ok(day);
+    }
+
+    @PutMapping("/days/{id}")
+    public ResponseEntity<DayResponse> updateDay(@PathVariable("id") Long dayId,
+                                                         @RequestBody UpdateDayRequest updateDayRequest,
+                                                         @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        DayResponse updatedDay = customerService.updateDay(dayId, updateDayRequest, userEmail);
+        return ResponseEntity.ok(updatedDay);
+    }
+
+    @DeleteMapping("/days/{id}")
+    public ResponseEntity<DayResponse> deleteDay(@PathVariable("id") Long dayId,
+                                                         @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        DayResponse deletedDay = customerService.deleteDay(dayId, userEmail);
+        return ResponseEntity.ok(deletedDay);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @PostMapping("/add-exercise")
+    public ResponseEntity<ExerciseResponse> addDay(@ModelAttribute AddExerciseRequest addExerciseRequest,
+                                                   @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        ExerciseResponse response = customerService.addExercise(addExerciseRequest, userEmail);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/exercises")
+    public ResponseEntity<List<ExerciseResponse>> getAllExercises(@AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        List<ExerciseResponse> exercises = customerService.getAllExercises(userEmail);
+        return ResponseEntity.ok(exercises);
+    }
+
+    @GetMapping("/exercises/{id}")
+    public ResponseEntity<ExerciseResponse> getExerciseById(@PathVariable("id") Long exerciseId,
+                                                  @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        ExerciseResponse exercise = customerService.getExerciseById(exerciseId, userEmail);
+        return ResponseEntity.ok(exercise);
+    }
+
+    @PutMapping("/exercises/{id}")
+    public ResponseEntity<ExerciseResponse> updateExercise(@PathVariable("id") Long exerciseId,
+                                                 @RequestBody UpdateExerciseRequest updateExerciseRequest,
+                                                 @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        ExerciseResponse updatedExercise = customerService.updateExercise(exerciseId, updateExerciseRequest, userEmail);
+        return ResponseEntity.ok(updatedExercise);
+    }
+
+    @DeleteMapping("/exercises/{id}")
+    public ResponseEntity<ExerciseResponse> deleteExercise(@PathVariable("id") Long exerciseId,
+                                                 @AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        ExerciseResponse deletedExercise = customerService.deleteExercise(exerciseId, userEmail);
+        return ResponseEntity.ok(deletedExercise);
+    }
+
 }

@@ -1,3 +1,4 @@
+import { use } from "react";
 import { useAuth } from "../providers/AuthContext"
 import { Navigate } from "react-router-dom";
 export const RoleBasedRoute = ({children, role}) => {
@@ -10,8 +11,8 @@ export const RoleBasedRoute = ({children, role}) => {
     if(!user)
         return <Navigate to="/" />
     
-    if(user.role !== role){
-        return <Navigate to="/unauthorized" />
+    if (!user.roles.includes(role)) {
+        return <Navigate to="/unauthorized" />;
     }
 
     return children;

@@ -2,13 +2,13 @@ package com.kowal.backend.customer.mapper;
 
 import com.kowal.backend.customer.dto.response.RoutineResponse;
 import com.kowal.backend.customer.model.Routine;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class RoutineMapper {
     public RoutineResponse mapRoutineToRoutineResponse(Routine routine){
         RoutineResponse response = new RoutineResponse();

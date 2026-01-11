@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 import classes from "./ImageUploader.module.css";
 
-const ImageUploader = () => {
+export const ImageUploader = ({ image, onFileSelect }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-
+  const inputRef = useRef(null);
 
   const handleImageChange = (e) => {
-    e.preventDefault();
     const file = e.target.files[0];
 
     if (file) {
+      onFileSelect(file);
+
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrl(reader.result);
-      };
+      reader.onloadend = () => setImagePreviewUrl(reader.result);
       reader.readAsDataURL(file);
-    } else {
-      setImagePreviewUrl(null);
     }
   };
 
+  useEffect(() => {
+    if (!image) {
+      setImagePreviewUrl(null);
+
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    }
+  }, [image]);
+
   return (
     <div className={classes.imageUploaderContainer}>
-        <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className={classes.imageUploaderInput}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        className={classes.imageUploaderInput}
+      />
+
+      {imagePreviewUrl ? (
+        <img
+          src={imagePreviewUrl}
+          className={classes.imageUploaderImgPreview}
         />
-        {imagePreviewUrl ? 
-            (<img src={imagePreviewUrl} alt="preview" className={classes.imageUploaderImgPreview} />)
-            : 
-            (<FontAwesomeIcon icon={faImage} className={classes.imageUploaderIcon}/>)
-        }
+      ) : (
+        <FontAwesomeIcon
+          icon={faImage}
+          className={classes.imageUploaderIcon}
+        />
+      )}
     </div>
   );
 };
-
-export default ImageUploader;

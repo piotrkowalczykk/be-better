@@ -1,9 +1,9 @@
 import classes from "./RoutineCard.module.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
-export const RoutineCard = ({ title, Icon, userProgres, scope, unit, value, pathColor, trailColor }) => {
+export const RoutineCard = ({ title, Icon, userProgres, scope, unit, value, pathColor, trailColor, onClick }) => {
     return (
-        <div className={classes.routineCardContainer}>
+        <div className={classes.routineCardContainer} onClick={onClick}>
             <h2 className={classes.routineCardtitle}>{title}</h2>
 
             <div className={classes.progressWrapper}>

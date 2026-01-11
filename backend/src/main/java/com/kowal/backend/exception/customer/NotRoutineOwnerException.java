@@ -4,12 +4,10 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class NotRoutineOwnerException extends RuntimeException {
-
-    private HttpStatus status;
-
-    public NotRoutineOwnerException(String message) {
-        super(message);
-        this.status = HttpStatus.FORBIDDEN;
+public class NotRoutineOwnerException extends CustomException {
+    public NotRoutineOwnerException(Long routineId) {
+        super("User is not the owner of routine with ID:" + routineId, HttpStatus.NOT_FOUND);
     }
 }
+
+

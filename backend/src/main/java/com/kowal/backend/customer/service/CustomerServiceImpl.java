@@ -1,20 +1,32 @@
 package com.kowal.backend.customer.service;
 
-import com.kowal.backend.customer.dto.request.AddRoutineRequest;
-import com.kowal.backend.customer.dto.request.UpdateRoutineRequest;
+import com.kowal.backend.customer.dto.request.*;
+import com.kowal.backend.customer.dto.response.DayExerciseResponse;
+import com.kowal.backend.customer.dto.response.DayResponse;
+import com.kowal.backend.customer.dto.response.ExerciseResponse;
 import com.kowal.backend.customer.dto.response.RoutineResponse;
+import com.kowal.backend.customer.mapper.DayExerciseMapper;
+import com.kowal.backend.customer.mapper.DayMapper;
+import com.kowal.backend.customer.mapper.ExerciseMapper;
 import com.kowal.backend.customer.mapper.RoutineMapper;
+import com.kowal.backend.customer.model.Day;
+import com.kowal.backend.customer.model.DayExercise;
+import com.kowal.backend.customer.model.Exercise;
 import com.kowal.backend.customer.model.Routine;
+import com.kowal.backend.customer.repository.DayExerciseRepository;
+import com.kowal.backend.customer.repository.DayRepository;
+import com.kowal.backend.customer.repository.ExerciseRepository;
 import com.kowal.backend.customer.repository.RoutineRepository;
-import com.kowal.backend.exception.customer.NotRoutineOwnerException;
-import com.kowal.backend.exception.customer.RoutineNotFoundException;
+import com.kowal.backend.exception.customer.*;
 import com.kowal.backend.security.model.AuthUser;
 import com.kowal.backend.security.repository.AuthUserRepository;
+import com.kowal.backend.util.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,12 +37,28 @@ public class CustomerServiceImpl implements CustomerService {
     private final AuthUserRepository authUserRepository;
     private final RoutineRepository routineRepository;
     private final RoutineMapper routineMapper;
+    private final DayRepository dayRepository;
+    private final DayMapper dayMapper;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseMapper exerciseMapper;
+    private final FileStorageService fileStorageService;
+    private final DayExerciseRepository dayExerciseRepository;
+    private final DayExerciseMapper dayExerciseMapper;
 
     @Autowired
-    public CustomerServiceImpl(AuthUserRepository authUserRepository, RoutineRepository routineRepository, RoutineMapper routineMapper) {
+    public CustomerServiceImpl(AuthUserRepository authUserRepository, RoutineRepository routineRepository, RoutineMapper routineMapper,
+                               DayRepository dayRepository, DayMapper dayMapper, ExerciseRepository exerciseRepository, ExerciseMapper exerciseMapper,
+                                FileStorageService fileStorageService, DayExerciseRepository dayExerciseRepository, DayExerciseMapper dayExerciseMapper) {
         this.authUserRepository = authUserRepository;
         this.routineRepository = routineRepository;
         this.routineMapper = routineMapper;
+        this.dayRepository = dayRepository;
+        this.dayMapper = dayMapper;
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseMapper = exerciseMapper;
+        this.fileStorageService = fileStorageService;
+        this.dayExerciseRepository = dayExerciseRepository;
+        this.dayExerciseMapper = dayExerciseMapper;
     }
 
     @Override
@@ -97,6 +125,166 @@ public class CustomerServiceImpl implements CustomerService {
         return routineMapper.mapRoutineToRoutineResponse(routineToDelete);
     }
 
+    @Override
+    public DayResponse addDay(AddDayRequest request, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+
+        Day day = new Day();
+        day.setName(request.getName());
+        day.setColor(request.getColor());
+        day.setSecondaryColor(request.getSecondaryColor());
+        day.setDescription(request.getDescription());
+        day.setAuthUser(authUser);
+        day.setIcon(request.getIcon());
+        if(request.getFrequency() != null){
+            Set<Integer> frequency = routineMapper.mapStringFrequencyToIntegerSet(request.getFrequency());
+            day.setFrequency(frequency);
+        }
+
+        List<DayExercise> dayExercises = dayExerciseMapper.mapToListOfDayExercises(request.getExercises(), day, exerciseRepository);
+        day.setWorkoutExercises(dayExercises);
+
+        dayRepository.save(day);
+        return dayMapper.mapDayToDayResponse(day);
+    }
+
+    @Override
+    public List<DayResponse> getAllDays(String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+
+        return dayRepository.findByAuthUserId(authUser.getId())
+                .stream()
+                .map(dayMapper::mapDayToDayResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public DayResponse getDayById(Long dayId, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Day day = findDayAndVerifyOwner(dayId, authUser.getId());
+        return dayMapper.mapDayToDayResponse(day);
+    }
+
+    @Override
+    @Transactional
+    public DayResponse updateDay(Long dayId, UpdateDayRequest updateDayRequest, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Day day = findDayAndVerifyOwner(dayId, authUser.getId());
+
+        if (updateDayRequest.getName() != null) day.setName(updateDayRequest.getName());
+        if (updateDayRequest.getColor() != null) day.setColor(updateDayRequest.getColor());
+        if (updateDayRequest.getSecondaryColor() != null) day.setSecondaryColor(updateDayRequest.getSecondaryColor());
+        if (updateDayRequest.getIcon() != null) day.setIcon(updateDayRequest.getIcon());
+        if (updateDayRequest.getExercises() != null) {
+            List<DayExercise> dayExercises = dayExerciseMapper
+                    .mapToListOfDayExercises(updateDayRequest.getExercises(), day, exerciseRepository);
+
+            day.getWorkoutExercises().clear();
+            day.getWorkoutExercises().addAll(dayExercises);
+        }
+        if (updateDayRequest.getDescription() != null) day.setDescription(updateDayRequest.getDescription());
+        if (updateDayRequest.getFrequency() != null){
+            Set<Integer> frequency = routineMapper.mapStringFrequencyToIntegerSet(updateDayRequest.getFrequency());
+            day.setFrequency(frequency);
+        }
+
+        dayRepository.save(day);
+        return dayMapper.mapDayToDayResponse(day);
+    }
+
+    @Override
+    public DayResponse deleteDay(Long dayId, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Day day = findDayAndVerifyOwner(dayId, authUser.getId());
+
+        dayRepository.delete(day);
+        return dayMapper.mapDayToDayResponse(day);
+    }
+
+    @Override
+    public ExerciseResponse addExercise(AddExerciseRequest request, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+
+        Exercise exercise = new Exercise();
+        exercise.setName(request.getName());
+        exercise.setMuscleGroup(request.getMuscleGroup());
+        exercise.setAuthUser(authUser);
+
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            String imageUrl = fileStorageService.storeExerciseImage(request.getImage());
+            exercise.setImage(imageUrl);
+        }
+
+        exerciseRepository.save(exercise);
+        return exerciseMapper.mapExerciseToExerciseResponse(exercise);
+    }
+
+    @Override
+    public List<ExerciseResponse> getAllExercises(String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+
+        return exerciseRepository.findByAuthUserIdOrAuthUserIsNull(authUser.getId())
+                .stream()
+                .map(exerciseMapper::mapExerciseToExerciseResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ExerciseResponse getExerciseById(Long exerciseId, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Exercise exercise = findExerciseAndVerifyOwner(exerciseId, authUser.getId());
+        return exerciseMapper.mapExerciseToExerciseResponse(exercise);
+    }
+
+    @Override
+    @Transactional
+    public ExerciseResponse updateExercise(Long exerciseId, UpdateExerciseRequest request, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Exercise exercise = findExerciseAndVerifyOwner(exerciseId, authUser.getId());
+
+        if (request.getName() != null) exercise.setName(request.getName());
+        if (request.getMuscleGroup() != null) exercise.setMuscleGroup(request.getMuscleGroup());
+
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            fileStorageService.deleteFile(exercise.getImage());
+            String imageUrl = fileStorageService.storeExerciseImage(request.getImage());
+            exercise.setImage(imageUrl);
+        }
+
+        exerciseRepository.save(exercise);
+        return exerciseMapper.mapExerciseToExerciseResponse(exercise);
+    }
+
+    @Override
+    public ExerciseResponse deleteExercise(Long exerciseId, String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        Exercise exercise = findExerciseAndVerifyOwner(exerciseId, authUser.getId());
+
+        exerciseRepository.delete(exercise);
+        return exerciseMapper.mapExerciseToExerciseResponse(exercise);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private AuthUser findAuthUserByEmail(String userEmail) {
         return authUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
@@ -104,12 +292,31 @@ public class CustomerServiceImpl implements CustomerService {
 
     private Routine findRoutineAndVerifyOwner(Long routineId, Long authUserId) {
         Routine routine = routineRepository.findById(routineId)
-                .orElseThrow(() -> new RoutineNotFoundException("Routine not found with ID: " + routineId));
+                .orElseThrow(() -> new RoutineNotFoundException(routineId));
 
         if (!routine.getAuthUser().getId().equals(authUserId)) {
-            throw new NotRoutineOwnerException("User is not the owner of routine with ID: " + routineId);
+            throw new NotRoutineOwnerException(routineId);
         }
         return routine;
     }
 
+    private Day findDayAndVerifyOwner(Long dayId, Long authUserId) {
+        Day day = dayRepository.findById(dayId)
+                .orElseThrow(() -> new DayNotFoundException(dayId));
+
+        if (!day.getAuthUser().getId().equals(authUserId)) {
+            throw new NotDayOwnerException(dayId);
+        }
+        return day;
+    }
+
+    private Exercise findExerciseAndVerifyOwner(Long exerciseId, Long authUserId) {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new ExerciseNotFoundException(exerciseId));
+
+        if (!exercise.getAuthUser().getId().equals(authUserId)) {
+            throw new NotExerciseOwnerException(exerciseId);
+        }
+        return exercise;
+    }
 }

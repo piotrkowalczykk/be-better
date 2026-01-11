@@ -1,13 +1,14 @@
 package com.kowal.backend.customer.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class AddRoutineRequest {
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Scope is required")
+    @NotNull(message = "Scope is required")
     private Integer scope;
     @NotBlank(message = "Units are required")
     private String units;
@@ -17,6 +18,6 @@ public class AddRoutineRequest {
     private String frequency;
     @NotBlank(message = "Color is required")
     private String color;
-    @NotBlank(message = "DashboardPriority is required")
-    private int dashboardPriority;
+    @NotNull(message = "DashboardPriority is required")
+    private Integer dashboardPriority;
 }

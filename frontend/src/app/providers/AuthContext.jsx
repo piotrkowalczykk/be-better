@@ -16,7 +16,9 @@ export const AuthProvider = ({children}) => {
             setToken(savedToken);
             setUser({
                 email: decoded.sub,
-                role: decoded.roles
+                roles: decoded.roles.includes(",") 
+                ? decoded.roles.split(",") 
+                : [decoded.roles]
             });
         }
         setLoading(false);
@@ -28,7 +30,9 @@ export const AuthProvider = ({children}) => {
         setToken(token);
         setUser({
                 email: decoded.sub,
-                role: decoded.roles
+                roles: decoded.roles.includes(",") 
+                ? decoded.roles.split(",") 
+                : [decoded.roles]
         });
     }
 
