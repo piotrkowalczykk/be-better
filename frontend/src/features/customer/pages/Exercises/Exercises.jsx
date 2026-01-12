@@ -45,37 +45,52 @@ export const Exercises = () => {
     }
   };
 
-  const updateDayFrequency = async () => {
-  if (!selectedDay) return;
+  const weekDays = [
+    { id: 1, label: "Monday" },
+    { id: 2, label: "Tuesday" },
+    { id: 3, label: "Wednesday" },
+    { id: 4, label: "Thursday" },
+    { id: 5, label: "Friday" },
+    { id: 6, label: "Saturday" },
+    { id: 7, label: "Sunday" },
+  ];
 
-  try {
-    const token = localStorage.getItem("token");
-    const response = await fetch(
-      `http://localhost:8080/customer/days/${selectedDay.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          frequency: selectedDay.frequency || "",
-        }),
-      }
-      
+  const getDaysForWeekday = (weekdayId) => {
+    return days.filter(
+      (day) => Array.isArray(day.frequency) && day.frequency.includes(weekdayId)
     );
+  };
 
-    if (!response.ok)
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const updateDayFrequency = async () => {
+    if (!selectedDay) return;
 
-    fetchDays();
-    setSelectedDay(null);
-  } catch (error) {
-    console.error("Failed to save day:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/customer/days/${selectedDay.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            frequency: selectedDay.frequency || "",
+          }),
+        }
+      );
+
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      fetchDays();
+      setSelectedDay(null);
+    } catch (error) {
+      console.error("Failed to save day:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const deleteDay = async () => {
     try {
@@ -102,58 +117,32 @@ export const Exercises = () => {
     }
   };
 
-
   return (
     <Layout>
       <div className={classes.exercisesContainer}>
         <div className={classes.exercisesLeftContainer}>
           <h2 className={classes.exercisesTitle}>Workout Planner</h2>
           <div className={classes.exercisesWeekPlannerContainer}>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Monday</h3>
-              <Day
-                title="PUSH A"
-                color="#4848e6ff"
-                secondColor="#6868ff"
-                icon="✋"
-                message="Upper chest more focus"
-                visible={true}
-              />
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Tuesday</h3>
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Wednesday</h3>
-              <Day
-                title="PULL A"
-                color="#33c32bff"
-                secondColor="#0dff00ff"
-                icon="💪"
-                message="Upper chest more focus"
-                visible={true}
-              />
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Thursday</h3>
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Friday</h3>
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Saturday</h3>
-              <Day
-                title="SHOULDERS"
-                color="#e84040ff"
-                secondColor="#e96666ff"
-                icon="🟡"
-                message="Upper chest more focus"
-                visible={true}
-              />
-            </div>
-            <div className={classes.WeekPlannerItem}>
-              <h3 className={classes.WeekPlannerItemTitle}>Sunday</h3>
-            </div>
+            {weekDays.map((weekday) => (
+              <div key={weekday.id} className={classes.WeekPlannerItem}>
+                <h3 className={classes.WeekPlannerItemTitle}>
+                  {weekday.label}
+                </h3>
+
+                {getDaysForWeekday(weekday.id).map((day) => (
+                  <Day
+                    key={day.id}
+                    title={day.name}
+                    color={day.color}
+                    secondColor={day.secondaryColor}
+                    icon={day.icon}
+                    message={day.description}
+                    visible={true}
+                    onClick={() => setSelectedDay(day)}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 

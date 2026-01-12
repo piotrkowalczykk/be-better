@@ -14,6 +14,8 @@ export const DayCreator = () => {
   const [showModal, setShowModal] = useState(false);
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [muscleGroupFilter, setMuscleGroupFilter] = useState("");
   const location = useLocation();
   const dayId = location.state?.dayId;
   const isEditMode = !!dayId;
@@ -38,7 +40,8 @@ export const DayCreator = () => {
       const response = await fetch("http://localhost:8080/customer/exercises", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setExercises(data);
     } catch (err) {
@@ -54,13 +57,29 @@ export const DayCreator = () => {
     }
   }, [dayId]);
 
+  const filteredExercises = exercises.filter((exercise) => {
+    const matchesName = exercise.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesMuscleGroup = exercise.muscleGroup
+      .toLowerCase()
+      .includes(muscleGroupFilter.toLowerCase());
+
+    return matchesName && matchesMuscleGroup;
+  });
+
   const fetchDay = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8080/customer/days/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(
+        `http://localhost:8080/customer/days/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
 
       setDayData({
@@ -74,13 +93,13 @@ export const DayCreator = () => {
       if (data.exercises) {
         setSelectedExercises(
           data.exercises.map((ex) => ({
-            exerciseId: ex.id,
-            name: ex.name,
-            image: ex.image,
-            sets: ex.sets || 3,
-            reps: ex.reps || 10,
-            weight: ex.weight || 0,
-            rir: ex.rir || 0,
+            exerciseId: ex.exercise.id,
+            name: ex.exercise.name,
+            image: ex.exercise.image,
+            sets: ex.sets,
+            reps: ex.reps,
+            weight: ex.weight,
+            rir: ex.rir,
           }))
         );
       }
@@ -118,10 +137,12 @@ export const DayCreator = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
 
-      alert(isEditMode ? "Day updated successfully" : "Day created successfully");
-
+      alert(
+        isEditMode ? "Day updated successfully" : "Day created successfully"
+      );
 
       if (!isEditMode) {
         setDayData({
@@ -168,7 +189,10 @@ export const DayCreator = () => {
   return (
     <Layout>
       {showModal && (
-        <ModalWindow onClose={() => setShowModal(false)} title="Create Exercise">
+        <ModalWindow
+          onClose={() => setShowModal(false)}
+          title="Create Exercise"
+        >
           <CustomExercise />
         </ModalWindow>
       )}
@@ -180,7 +204,12 @@ export const DayCreator = () => {
               <h2 className={classes.dayDataSectionTitle}>
                 {isEditMode ? "Edit Day" : "Create Day"}
               </h2>
-              <CustomBtn text="Save" bgColor="#209d3dff" color="white" onClick={saveDay} />
+              <CustomBtn
+                text="Save"
+                bgColor="#209d3dff"
+                color="white"
+                onClick={saveDay}
+              />
             </div>
 
             <div className={classes.dayDataSectionContainer}>
@@ -188,33 +217,47 @@ export const DayCreator = () => {
                 type="text"
                 label="Name"
                 value={dayData.name}
-                onChange={(e) => setDayData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setDayData((prev) => ({ ...prev, name: e.target.value }))
+                }
               />
               <CustomInput
                 type="color"
                 label="Color"
                 value={dayData.color}
-                onChange={(e) => setDayData((prev) => ({ ...prev, color: e.target.value }))}
+                onChange={(e) =>
+                  setDayData((prev) => ({ ...prev, color: e.target.value }))
+                }
               />
               <CustomInput
                 type="color"
                 label="Secondary Color"
                 value={dayData.secondaryColor}
                 onChange={(e) =>
-                  setDayData((prev) => ({ ...prev, secondaryColor: e.target.value }))
+                  setDayData((prev) => ({
+                    ...prev,
+                    secondaryColor: e.target.value,
+                  }))
                 }
               />
               <CustomInput
                 type="text"
                 label="Description"
                 value={dayData.description}
-                onChange={(e) => setDayData((prev) => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setDayData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
               <CustomInput
                 type="text"
                 label="Icon"
                 value={dayData.icon}
-                onChange={(e) => setDayData((prev) => ({ ...prev, icon: e.target.value }))}
+                onChange={(e) =>
+                  setDayData((prev) => ({ ...prev, icon: e.target.value }))
+                }
               />
             </div>
           </div>
@@ -239,22 +282,34 @@ export const DayCreator = () => {
         <div className={classes.dayCreatorRightContainer}>
           <div className={classes.dayRightHeader}>
             <h2 className={classes.dayDataSectionTitle}>Library</h2>
-            <button className={classes.dayRightBtn} onClick={() => setShowModal(!showModal)}>
+            <button
+              className={classes.dayRightBtn}
+              onClick={() => setShowModal(!showModal)}
+            >
               Custom Exercise
             </button>
           </div>
 
           <div className={classes.dayRightSection1}>
             <CustomInput label="Equipment" />
-            <CustomInput label="Muscle group" />
-            <SearchBar />
+
+            <CustomInput
+              label="Muscle group"
+              value={muscleGroupFilter}
+              onChange={(e) => setMuscleGroupFilter(e.target.value)}
+            />
+
+            <SearchBar
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
           <div className={classes.dayRightSection2}>
             {loading && <p>Loading exercises...</p>}
 
             {!loading &&
-              exercises.map((exercise) => (
+              filteredExercises.map((exercise) => (
                 <Exercise
                   key={exercise.id}
                   name={exercise.name}
