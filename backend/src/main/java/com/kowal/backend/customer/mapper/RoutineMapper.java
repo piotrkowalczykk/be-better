@@ -20,6 +20,7 @@ public class RoutineMapper {
         response.setUnits(routine.getUnits());
         response.setDashboardPriority(routine.getDashboardPriority());
         response.setFrequency(routine.getFrequency());
+        response.setValue(routine.getValue());
         return response;
     }
 

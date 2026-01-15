@@ -39,10 +39,10 @@ WHERE u.email = 'admin@test.com'
 
 
 
-INSERT INTO exercises (image, muscle_group, name)
-SELECT 'siema.jpg', 'bicpes', 'dumbbels-curls'
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbels-curls');
+INSERT INTO exercises (image, muscle_group, name, equipment)
+SELECT '/images/exercises/dumbbell-biceps-curls.webp', 'biceps', 'dumbbell-biceps-curls', 'DUMBBELL'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbell-biceps-curls');
 
-INSERT INTO exercises (image, muscle_group, name)
-SELECT 'siema.jpg', 'tricpes', 'dumbbels-push'
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbels-push');
+INSERT INTO exercises (image, muscle_group, name, equipment)
+SELECT '/images/exercises/dumbbell-kickback.jpg', 'tricpes', 'dumbbell-kickback', 'DUMBBELL'
+WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'dumbbell-kickback');

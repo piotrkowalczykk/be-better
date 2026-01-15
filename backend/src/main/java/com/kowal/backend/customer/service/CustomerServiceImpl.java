@@ -9,10 +9,7 @@ import com.kowal.backend.customer.mapper.DayExerciseMapper;
 import com.kowal.backend.customer.mapper.DayMapper;
 import com.kowal.backend.customer.mapper.ExerciseMapper;
 import com.kowal.backend.customer.mapper.RoutineMapper;
-import com.kowal.backend.customer.model.Day;
-import com.kowal.backend.customer.model.DayExercise;
-import com.kowal.backend.customer.model.Exercise;
-import com.kowal.backend.customer.model.Routine;
+import com.kowal.backend.customer.model.*;
 import com.kowal.backend.customer.repository.DayExerciseRepository;
 import com.kowal.backend.customer.repository.DayRepository;
 import com.kowal.backend.customer.repository.ExerciseRepository;
@@ -112,6 +109,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (updateRoutineRequest.getUnits() != null) routineToUpdate.setUnits(updateRoutineRequest.getUnits());
         if (updateRoutineRequest.getDashboardPriority() != null) routineToUpdate.setDashboardPriority(updateRoutineRequest.getDashboardPriority());
         if (updateRoutineRequest.getFrequency() != null) routineToUpdate.setFrequency(routineMapper.mapStringFrequencyToIntegerSet(updateRoutineRequest.getFrequency()));
+        if(updateRoutineRequest.getValue() != null) routineToUpdate.setValue(updateRoutineRequest.getValue());
 
         routineRepository.save(routineToUpdate);
         return routineMapper.mapRoutineToRoutineResponse(routineToUpdate);
@@ -209,6 +207,7 @@ public class CustomerServiceImpl implements CustomerService {
         exercise.setName(request.getName());
         exercise.setMuscleGroup(request.getMuscleGroup());
         exercise.setAuthUser(authUser);
+        exercise.setEquipment(request.getEquipment());
 
         if (request.getImage() != null && !request.getImage().isEmpty()) {
             String imageUrl = fileStorageService.storeExerciseImage(request.getImage());
@@ -264,25 +263,11 @@ public class CustomerServiceImpl implements CustomerService {
         return exerciseMapper.mapExerciseToExerciseResponse(exercise);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public List<Equipment> getAllEquipment(String userEmail) {
+        AuthUser authUser = findAuthUserByEmail(userEmail);
+        return List.of(Equipment.values());
+    }
 
 
     private AuthUser findAuthUserByEmail(String userEmail) {

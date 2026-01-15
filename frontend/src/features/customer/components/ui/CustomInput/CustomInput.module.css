@@ -8,6 +8,7 @@
     flex: 1;
     min-width: 150px;
     height: max-content;
+    width: 100%;
 }
 
 .formInputContainer label{
@@ -15,7 +16,7 @@
     font-size: 0.75rem;
 }
 
-.formInputContainer input{
+.formInput {
     width: 100%;
     background-color: var(--second-color);
     outline: none;
@@ -25,8 +26,10 @@
     color: white;
     font-size: 1rem; 
     font-weight: 100;
+    appearance: none; 
+    -webkit-appearance: none;
+    cursor: pointer;
 }
-
 .formInputContainer input[type="color"] {
     -webkit-appearance: none;
     appearance: none;

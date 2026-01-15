@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Dashboard } from "../../features/customer/pages/Dashboard";
+import { Dashboard } from "../../features/customer/pages/Dashboard/Dashboard";
 import { Unauthorized } from "../../features/auth/pages/Unauthorized";
 import { RoleBasedRoute } from "../routes/RoleBasedRoute";
 import { Login } from "../../features/auth/pages/Login";

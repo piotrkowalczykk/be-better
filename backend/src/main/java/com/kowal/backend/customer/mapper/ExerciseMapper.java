@@ -12,6 +12,7 @@ public class ExerciseMapper {
         response.setName(exercise.getName());
         response.setMuscleGroup(exercise.getMuscleGroup());
         response.setImage(exercise.getImage());
+        response.setEquipment(exercise.getEquipment());
         return response;
     }
 }

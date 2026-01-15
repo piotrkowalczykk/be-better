@@ -5,6 +5,7 @@ import com.kowal.backend.customer.dto.response.DayExerciseResponse;
 import com.kowal.backend.customer.dto.response.DayResponse;
 import com.kowal.backend.customer.dto.response.ExerciseResponse;
 import com.kowal.backend.customer.dto.response.RoutineResponse;
+import com.kowal.backend.customer.model.Equipment;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -28,4 +29,5 @@ public interface CustomerService {
     ExerciseResponse updateExercise(Long dayId, UpdateExerciseRequest updateExerciseRequest, String userEmail);
     ExerciseResponse deleteExercise(Long exerciseId, String userEmail);
 
+    List<Equipment> getAllEquipment(String userEmail);
 }

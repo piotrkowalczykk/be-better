@@ -5,15 +5,18 @@ import com.kowal.backend.customer.dto.response.DayExerciseResponse;
 import com.kowal.backend.customer.dto.response.DayResponse;
 import com.kowal.backend.customer.dto.response.ExerciseResponse;
 import com.kowal.backend.customer.dto.response.RoutineResponse;
+import com.kowal.backend.customer.model.Equipment;
 import com.kowal.backend.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -171,6 +174,13 @@ public class CustomerController {
         String userEmail = userDetails.getUsername();
         ExerciseResponse deletedExercise = customerService.deleteExercise(exerciseId, userEmail);
         return ResponseEntity.ok(deletedExercise);
+    }
+
+    @GetMapping("/exercises/equipment")
+    public ResponseEntity<List<Equipment>> getAllEquipment(@AuthenticationPrincipal UserDetails userDetails){
+        String userEmail = userDetails.getUsername();
+        List<Equipment> equipment = customerService.getAllEquipment(userEmail);
+        return ResponseEntity.ok(equipment);
     }
 
 }

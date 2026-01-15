@@ -53,7 +53,7 @@ export const Routines = () => {
     {
       name: "Steps",
       icon: "StepsIcon",
-      scope: "10 000",
+      scope: "10000",
       units: "m",
       color: "#ff0000",
     },
@@ -125,7 +125,10 @@ export const Routines = () => {
 
       if (!response.ok) throw new Error("Failed to fetch routines");
 
-      const data = await response.json();
+       const data = (await response.json()).sort(
+      (a, b) => a.dashboardPriority - b.dashboardPriority
+    );
+
       setUserRoutines(data);
     } catch (error) {
       console.error("Error fetching routines:", error);
@@ -220,10 +223,10 @@ export const Routines = () => {
                   key={routine.id}
                   title={routine.name}
                   Icon={IconsData[routine.icon]}
-                  userProgres={routine.currentProgress || 0}
+                  userProgres={0}
                   scope={routine.scope}
                   unit={routine.units}
-                  value={(routine.currentProgress / routine.scope) * 100}
+                  value={0}
                   pathColor={routine.color}
                   trailColor="#2b2b27"
                   onClick={() => handleSelectCard(routine)}

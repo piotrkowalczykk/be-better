@@ -13,9 +13,11 @@ import { useLocation } from "react-router-dom";
 export const DayCreator = () => {
   const [showModal, setShowModal] = useState(false);
   const [exercises, setExercises] = useState([]);
+  const [equipment, setEquipment] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [muscleGroupFilter, setMuscleGroupFilter] = useState("");
+  const [equipmentFilter, setEquipmentFilter] = useState("");
   const location = useLocation();
   const dayId = location.state?.dayId;
   const isEditMode = !!dayId;
@@ -32,6 +34,7 @@ export const DayCreator = () => {
 
   useEffect(() => {
     fetchExercises();
+    fetchEquipmnet();
   }, []);
 
   const fetchExercises = async () => {
@@ -44,6 +47,26 @@ export const DayCreator = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setExercises(data);
+    } catch (err) {
+      console.error("Failed to fetch exercises:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchEquipmnet = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:8080/customer/exercises/equipment",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setEquipment(data);
     } catch (err) {
       console.error("Failed to fetch exercises:", err);
     } finally {
@@ -66,7 +89,10 @@ export const DayCreator = () => {
       .toLowerCase()
       .includes(muscleGroupFilter.toLowerCase());
 
-    return matchesName && matchesMuscleGroup;
+    const matchesEquipment =
+      equipmentFilter === "" || exercise.equipment === equipmentFilter;
+
+    return matchesName && matchesMuscleGroup && matchesEquipment;
   });
 
   const fetchDay = async (id) => {
@@ -291,7 +317,13 @@ export const DayCreator = () => {
           </div>
 
           <div className={classes.dayRightSection1}>
-            <CustomInput label="Equipment" />
+            <CustomInput
+              type="select"
+              label="Equipment"
+              value={equipmentFilter}
+              onChange={(e) => setEquipmentFilter(e.target.value)}
+              options={equipment}
+            />
 
             <CustomInput
               label="Muscle group"

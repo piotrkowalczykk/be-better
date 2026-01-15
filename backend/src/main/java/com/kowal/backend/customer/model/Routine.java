@@ -16,6 +16,7 @@ public class Routine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Integer value;
     private Integer scope;
     private String units;
     private String icon;

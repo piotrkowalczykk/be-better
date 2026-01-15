@@ -8,10 +8,11 @@ import java.util.Set;
 public class RoutineResponse {
     private Long Id;
     private String name;
-    private int scope;
+    private Integer value;
+    private Integer scope;
     private String units;
     private String icon;
     private Set<Integer> frequency;
     private String color;
-    private int dashboardPriority;
+    private Integer dashboardPriority;
 }

@@ -15,6 +15,8 @@ public class Exercise {
     private String name;
     private String muscleGroup;
     private String image;
+    @Enumerated(EnumType.STRING)
+    private Equipment equipment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

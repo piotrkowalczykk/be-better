@@ -2,24 +2,52 @@ import { CustomBtn } from "../../../../../components/ui/CustomBtn/CustomBtn";
 import { ImageUploader } from "../../../../../components/ui/ImageUploader/ImageUploader";
 import { CustomInput } from "../../ui/CustomInput/CustomInput";
 import classes from "./CustomExercise.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CustomExercise = () => {
   const [name, setName] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("");
   const [image, setImage] = useState(null);
+  const [equipmentList, setEquipmentList] = useState([]);
+  const [equipment, setEquipment] = useState("");
+
+
+  useEffect(() => {
+      fetchEquipment();
+    }, []);
+
+    const fetchEquipment = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          "http://localhost:8080/customer/exercises/equipment",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch equipment");
+
+        const data = await res.json();
+        setEquipmentList(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("muscleGroup", muscleGroup);
+    formData.append("equipment", equipment);
+
 
     if (image) {
       formData.append("image", image);
     }
 
     try {
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:8080/customer/add-exercise", {
         method: "POST",
         body: formData,
@@ -36,7 +64,6 @@ export const CustomExercise = () => {
       const data = await res.json();
       clearData();
       console.log("Saved:", data);
-
     } catch (err) {
       console.error(err);
     }
@@ -46,7 +73,8 @@ export const CustomExercise = () => {
     setImage(null);
     setName("");
     setMuscleGroup("");
-  }
+    setEquipment("");
+  };
 
   return (
     <div className={classes.customExercisesContainer}>
@@ -56,6 +84,14 @@ export const CustomExercise = () => {
         label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+      />
+
+      <CustomInput
+        type="select"
+        label="Equipment"
+        value={equipment}
+        onChange={(e) => setEquipment(e.target.value)}
+        options={equipmentList}
       />
 
       <CustomInput

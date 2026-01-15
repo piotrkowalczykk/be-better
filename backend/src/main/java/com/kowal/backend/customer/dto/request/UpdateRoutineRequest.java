@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class UpdateRoutineRequest {
     private String name;
+    private Integer value;
     private Integer scope;
     private String units;
     private String icon;
